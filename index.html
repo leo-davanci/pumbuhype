@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" type="image/png" href="rocket-light.png">
+<style>
+html { color-scheme: light; }
+:root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+body { margin: 0; -webkit-font-smoothing: antialiased; }
+img { max-width: 100%; }
+[hidden] { display: none !important; }
+</style>
+<title>Pumbuhype</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Pumbuhype is a mobile game publisher. We test, soft launch and scale games with independent studios.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Semi+Condensed:wght@500;700;800&family=Hanken+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: the page climbs left to right like the logo's curve; three phases sit on one launch line. */
+:root {
+  --bg: #F3F6F1;
+  --surface: #FFFFFF;
+  --ink: #0E2A1C;
+  --muted: #4B6355;
+  --line: #D5E0D6;
+  --lime: #6DB33F;
+  --green: #2F8A4A;
+  --deep: #123F27;
+  --accent-ink: #FFFFFF;
+  --chip: #E3EFDD;
+  --glow: rgba(109, 179, 63, 0.55);
+  --flame-core: #F3FFB8;
+  --logo-light: block;
+  --logo-dark: none;
+  --display: "Saira Semi Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --wrap: 1160px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0A1510; --surface: #10211A; --ink: #E4F1E6; --muted: #9BB5A3; --line: #22392C;
+    --lime: #86CC55; --green: #5DBB75; --deep: #BFE8C8; --accent-ink: #0A1510; --chip: #173023; --glow: rgba(134, 204, 85, 0.5); --flame-core: #F3FFB8;
+    --logo-light: none; --logo-dark: block; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0A1510; --surface: #10211A; --ink: #E4F1E6; --muted: #9BB5A3; --line: #22392C;
+  --lime: #86CC55; --green: #5DBB75; --deep: #BFE8C8; --accent-ink: #0A1510; --chip: #173023; --glow: rgba(134, 204, 85, 0.5); --flame-core: #F3FFB8;
+  --logo-light: none; --logo-dark: block; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 400 17px/1.6 var(--body); }
+a { color: inherit; }
+.wrap {
+  max-width: var(--wrap); margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--display); line-height: 1.02; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+p { margin: 0; }
+.eyebrow { font: 500 12px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--green); }
+.on-light { display: var(--logo-light); }
+.on-dark { display: var(--logo-dark); }
+:focus-visible { outline: 3px solid var(--lime); outline-offset: 3px; border-radius: 4px; }
+
+/* Nav */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 800 21px/1 var(--display); }
+.brand img { height: 34px; width: auto; }
+.brand .b1 { color: var(--lime); } .brand .b2 { color: var(--green); } .brand .b3 { color: var(--deep); }
+.nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; font-weight: 500; font-size: 15px; }
+.nav ul a { text-decoration: none; color: var(--muted); }
+.nav ul a:hover { color: var(--ink); }
+.btn { display: inline-flex; align-items: center; gap: 8px; font: 700 16px/1 var(--display); letter-spacing: 0.02em; text-decoration: none; padding: 13px 20px; border-radius: 999px; border: 0; cursor: pointer; background: var(--green); color: var(--accent-ink); transition: transform .15s ease, background .15s ease; }
+.btn:hover { background: var(--deep); transform: translateY(-1px); }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
+.btn.ghost:hover { box-shadow: inset 0 0 0 1.5px var(--green); background: transparent; }
+.nav .btn { padding: 10px 16px; font-size: 15px; }
+
+/* Hero */
+.hero .wrap { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; padding-block: 72px 56px; }
+.hero h1 { font-size: clamp(44px, 6.4vw, 86px); font-weight: 800; margin-top: 18px; }
+.hero h1 .up { color: var(--green); }
+.hero .lede { margin-top: 22px; max-width: 54ch; font-size: 19px; color: var(--muted); }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hero .logo { justify-self: center; width: 100%; max-width: 460px; }
+.hero .logo img { width: 100%; height: auto; }
+
+/* Ticker of what we watch */
+.metrics { border-block: 1px solid var(--line); background: var(--surface); }
+.metrics .wrap { display: flex; flex-wrap: wrap; gap: 10px 28px; padding-block: 16px; font: 500 13px/1.4 var(--mono); color: var(--muted); }
+.metrics b { color: var(--ink); font-weight: 500; }
+
+/* Phases */
+section { padding-block: 88px; }
+.head { display: grid; gap: 14px; max-width: 720px; }
+.head h2 { font-size: clamp(34px, 4.4vw, 54px); font-weight: 800; }
+.head p { color: var(--muted); font-size: 18px; max-width: 60ch; }
+.curve { margin-top: 40px; display: grid; gap: 12px; }
+.curve-art { position: relative; }
+.curve svg { position: relative; z-index: 1; display: block; width: 100%; height: auto; overflow: visible; }
+.curve canvas { position: absolute; z-index: 0; left: -40px; top: -140px; width: calc(100% + 80px); height: calc(100% + 180px); pointer-events: none; }
+.curve .track, .curve .trail { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+.curve .track { stroke: var(--line); stroke-dasharray: 2 12; }
+.curve .trail { stroke: url(#g); filter: drop-shadow(0 0 6px var(--glow)); }
+.curve .dot { fill: var(--bg); stroke: var(--line); stroke-width: 4; transform-box: fill-box; transform-origin: center; transition: fill .3s ease, stroke .3s ease; }
+.curve .dot.on { fill: var(--lime); stroke: var(--green); }
+.curve .dot.pop { animation: pop .6s cubic-bezier(.3, 1.8, .5, 1); }
+@keyframes pop { 40% { transform: scale(1.9); } }
+.curve .stop1 { stop-color: var(--lime); } .curve .stop2 { stop-color: var(--deep); }
+.rocket { transition: opacity .35s ease; }
+.rocket .hull { fill: var(--surface); stroke: var(--deep); stroke-width: 3.5; stroke-linejoin: round; }
+.rocket .port { fill: var(--lime); stroke: var(--deep); stroke-width: 3; }
+.rocket .flame { fill: var(--lime); }
+.rocket .flame.core { fill: var(--flame-core); }
+.hint { position: absolute; z-index: 2; left: 0; top: 0; font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--green); transition: opacity .4s ease; animation: nudge 1.4s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateY(4px); } }
+.stages { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; gap: 12px; list-style: none; margin: 0; padding: 0; font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.stages li { transition: color .3s ease, transform .3s ease; }
+.stages li.on { color: var(--green); }
+.stages li.now { color: var(--ink); transform: scale(1.15); }
+.phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 8px; align-items: start; }
+.phase { position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: grid; gap: 14px; min-width: 0; transition: border-color .4s ease, transform .4s ease, box-shadow .4s ease; }
+.phase::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, var(--glow) 50%, transparent 70%); opacity: .5; transform: translateX(-110%); pointer-events: none; }
+.phase.flash::after { animation: sweep .9s ease-out; }
+@keyframes sweep { to { transform: translateX(110%); } }
+.reveal .phase .line { opacity: .16; transform: translateY(10px); transition: opacity .45s ease, transform .5s cubic-bezier(.2, .8, .2, 1); }
+.reveal .phase .line.in { opacity: 1; transform: none; }
+.phase li.line.in::before { animation: blip .6s ease-out; }
+@keyframes blip { 40% { transform: rotate(45deg) scale(2.2); box-shadow: 0 0 10px var(--glow); } }
+.phase.done { border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+.phase.now { border-color: var(--green); transform: translateY(-8px); box-shadow: 0 20px 44px -22px var(--glow), 0 0 0 1px var(--green); }
+.phase .tag { display: flex; justify-content: space-between; align-items: baseline; font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.phase h3 { font-size: 40px; font-weight: 800; }
+.phase:nth-child(1) h3 { color: var(--lime); }
+.phase:nth-child(2) h3 { color: var(--green); }
+.phase:nth-child(3) h3 { color: var(--deep); }
+.phase p { color: var(--muted); }
+.phase ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; font-size: 15px; }
+.phase li { display: flex; gap: 10px; }
+.phase li::before { content: ""; flex: none; width: 7px; height: 7px; margin-top: 9px; border-radius: 2px; background: var(--lime); transform: rotate(45deg); }
+.gate { margin-top: 4px; padding: 12px 14px; border-radius: 10px; background: var(--chip); font: 400 13px/1.5 var(--mono); }
+.meter { display: block; height: 4px; margin-top: 10px; border-radius: 4px; background: var(--line); overflow: hidden; }
+.meter i { display: block; height: 100%; width: calc(var(--fill, 0) * 100%); border-radius: inherit; background: linear-gradient(90deg, var(--lime), var(--green)); }
+.gate span { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
+
+/* Offer */
+.offer { background: var(--surface); border-block: 1px solid var(--line); }
+.offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 48px; background: var(--line); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.offer-grid > div { background: var(--surface); padding: 28px; display: grid; gap: 10px; align-content: start; min-width: 0; }
+.offer-grid h3 { font-size: 24px; font-weight: 700; }
+.offer-grid p { color: var(--muted); font-size: 16px; }
+
+/* Pitch */
+.pitch .wrap { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 56px; align-items: start; }
+.pitch .head { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 96px); }
+.checklist { margin-top: 20px; display: grid; gap: 10px; font-size: 16px; color: var(--muted); padding: 0; list-style: none; }
+.checklist li { display: flex; gap: 12px; }
+.checklist b { font: 500 13px/1.9 var(--mono); color: var(--green); }
+form { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; min-width: 0; }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+label { font-weight: 600; font-size: 14px; }
+input, select, textarea { font: 400 16px/1.4 var(--body); color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; width: 100%; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green); }
+textarea { min-height: 110px; resize: vertical; }
+.form-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
+.form-foot small { color: var(--muted); font-size: 13px; }
+.sent { grid-column: 1 / -1; padding: 14px 16px; border-radius: 10px; background: var(--chip); font-weight: 500; }
+
+/* Footer */
+footer { border-top: 1px solid var(--line); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 16px; padding-block: 32px; color: var(--muted); font-size: 14px; }
+footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spacing: 0.02em; }
+
+@media (min-width: 901px) and (min-height: 720px) {
+  #model { padding-block: 0; }
+  .scene { height: 250vh; }
+  .stage { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 60px); height: calc(100vh - 60px - env(safe-area-inset-top, 0px)); display: flex; align-items: center; overflow: hidden; }
+  .stage > .wrap { width: 100%; }
+  #model .head { gap: 10px; }
+  #model .head h2 { font-size: clamp(32px, 3.6vw, 46px); }
+  .curve { margin-top: 24px; gap: 8px; }
+  .phase { padding: 20px 22px; gap: 9px; }
+  .phase h3 { font-size: 32px; }
+  .phase p { font-size: 15px; line-height: 1.5; }
+  .phase ul { font-size: 14px; line-height: 1.45; gap: 5px; }
+  .phase li::before { margin-top: 7px; }
+  .gate { padding: 10px 12px; }
+}
+@media (min-width: 901px) and (min-height: 720px) and (max-height: 880px) {
+  #model .head p { display: none; }
+}
+@media (max-width: 900px) {
+  .nav ul { display: none; }
+  .hero .wrap, .pitch .wrap { grid-template-columns: 1fr; gap: 36px; }
+  .hero .wrap { padding-block: 44px 40px; }
+  .hero .logo { max-width: 340px; order: -1; }
+  .curve { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 60px); z-index: 2; margin-top: 28px; padding-block: 12px; background: var(--bg); border-bottom: 1px solid var(--line); gap: 10px; }
+  .phases, .offer-grid { grid-template-columns: 1fr; }
+  .phases { margin-top: 40px; }
+  .phase:nth-child(1), .phase:nth-child(2) { margin-top: 0; }
+  .pitch .head { position: static; }
+  section { padding-block: 64px; }
+}
+@media (max-width: 560px) {
+  form { grid-template-columns: 1fr; padding: 22px; }
+  .brand span.word { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hint, .curve .dot.pop, .phase.flash::after, .phase li.line.in::before { animation: none; }
+  .reveal .phase .line { transform: none; }
+  .phase { transition: none; }
+  .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Pumbuhype home">
+      <img class="on-light" src="rocket-light.png" alt="">
+      <img class="on-dark" src="rocket-dark.png" alt="">
+      <span class="word"><span class="b1">Pum</span><span class="b2">bu</span><span class="b3">hype</span></span>
+    </a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="#model">How we publish</a></li>
+        <li><a href="#offer">What you get</a></li>
+        <li><a href="#pitch">Pitch a game</a></li>
+      </ul>
+    </nav>
+    <a class="btn" href="#pitch">Send your build</a>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <p class="eyebrow">Mobile game publishing</p>
+        <h1>Your game, from first test to the <span class="up">top charts</span>.</h1>
+        <p class="lede">Pumbuhype partners with independent studios to test, soft launch and scale mobile games. You build the game. We bring the user acquisition budget, the ad creatives and the data that tells us both when it is ready to climb.</p>
+        <div class="ctas">
+          <a class="btn" href="#pitch">Pitch your game</a>
+          <a class="btn ghost" href="#model">See how it works</a>
+        </div>
+      </div>
+      <div class="logo">
+        <img class="on-light" src="logo-light.png" alt="Pumbuhype logo: a line climbing over two hills and launching a rocket">
+        <img class="on-dark" src="logo-dark.png" alt="Pumbuhype logo: a line climbing over two hills and launching a rocket">
+      </div>
+    </div>
+  </div>
+
+  <div class="metrics" aria-label="What we track on every game">
+    <div class="wrap">
+      <span>We watch <b>CPI</b></span>
+      <span><b>D1 / D7 / D30</b> retention</span>
+      <span><b>Playtime</b> per session</span>
+      <span><b>ARPDAU</b></span>
+      <span><b>ROAS</b> by cohort</span>
+      <span><b>LTV</b> vs. cost to acquire</span>
+    </div>
+  </div>
+
+  <section id="model">
+    <div class="scene" id="scene">
+    <div class="stage">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">How we publish</p>
+        <h2>Three phases. Each one has to earn the next.</h2>
+        <p>Every game moves through the same climb. We set clear numbers for each step up front, so you always know where your game stands and what it needs to move on.</p>
+      </div>
+
+      <div class="curve" id="curve" aria-hidden="true">
+        <div class="curve-art">
+          <canvas id="fx"></canvas>
+          <span class="hint" id="hint">↓ Scroll to launch</span>
+          <svg viewBox="0 0 1200 136">
+            <defs>
+              <linearGradient id="g" x1="0" x2="1" y1="0" y2="0">
+                <stop class="stop1" offset="0"></stop>
+                <stop class="stop2" offset="1"></stop>
+              </linearGradient>
+            </defs>
+            <path class="track" id="track" d="M0,128 H40 C110,128 140,84 200,84 C270,84 340,108 400,108 C460,108 530,50 600,50 C670,50 740,78 800,78 L1170,10"></path>
+            <path class="trail" id="trail" d="M0,128 H40 C110,128 140,84 200,84 C270,84 340,108 400,108 C460,108 530,50 600,50 C670,50 740,78 800,78 L1170,10"></path>
+            <circle class="dot" cx="200" cy="84" r="9"></circle>
+            <circle class="dot" cx="600" cy="50" r="9"></circle>
+            <circle class="dot" cx="1000" cy="41.2" r="9"></circle>
+            <g class="rocket" id="rocket" transform="translate(40 128)">
+              <g id="rocket-body">
+                <g transform="translate(-15 0)"><g id="flame">
+                  <path class="flame" d="M0,-6 L-22,0 L0,6 Z"></path>
+                  <path class="flame core" d="M0,-3 L-12,0 L0,3 Z"></path>
+                </g></g>
+                <path class="hull" d="M-8,-9 L-20,-19 L-16,-8 Z M-8,9 L-20,19 L-16,8 Z"></path>
+                <path class="hull" d="M30,0 C22,-11 6,-12 -15,-9 L-15,9 C6,12 22,11 30,0 Z"></path>
+                <circle class="port" cx="10" cy="0" r="4.5"></circle>
+              </g>
+            </g>
+          </svg>
+        </div>
+        <ol class="stages">
+          <li>Pump</li>
+          <li>Boost</li>
+          <li>Hype</li>
+        </ol>
+      </div>
+
+      <div class="phases">
+        <article class="phase">
+          <div class="tag"><span>Phase 1</span><span>2 to 4 weeks</span></div>
+          <h3>Pump</h3>
+          <p>We find out if players want your game before anyone spends months on it.</p>
+          <ul>
+            <li>Marketability test with ad creatives in the US</li>
+            <li>CPI and click-through compared across concepts</li>
+            <li>Short prototype playtest for early retention</li>
+          </ul>
+          <div class="gate"><span>Gate to Boost</span>Competitive CPI for the genre and a D1 that shows a hook<b class="meter"><i></i></b></div>
+        </article>
+
+        <article class="phase">
+          <div class="tag"><span>Phase 2</span><span>2 to 4 months</span></div>
+          <h3>Boost</h3>
+          <p>Soft launch in test markets. We iterate together until the numbers hold.</p>
+          <ul>
+            <li>Soft launch in markets such as Canada, Philippines and Nordics</li>
+            <li>Weekly build reviews with retention and monetization data</li>
+            <li>Ad mediation, IAP pricing and live-ops tuning</li>
+          </ul>
+          <div class="gate"><span>Gate to Hype</span>Stable D7 and D30, and LTV above cost to acquire<b class="meter"><i></i></b></div>
+        </article>
+
+        <article class="phase">
+          <div class="tag"><span>Phase 3</span><span>Ongoing</span></div>
+          <h3>Hype</h3>
+          <p>Global launch. We put real budget behind the game and keep it climbing.</p>
+          <ul>
+            <li>Worldwide launch on App Store and Google Play</li>
+            <li>User acquisition scaled across ad networks by ROAS</li>
+            <li>Fresh creatives, store page tests and live events</li>
+          </ul>
+          <div class="gate"><span>Goal</span>Profitable scale and a long life on the charts<b class="meter"><i></i></b></div>
+        </article>
+      </div>
+    </div>
+    </div>
+    </div>
+  </section>
+
+  <section class="offer" id="offer">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">What you get</p>
+        <h2>You keep making the game. We handle the rest.</h2>
+      </div>
+      <div class="offer-grid">
+        <div>
+          <h3>UA budget</h3>
+          <p>We fund the testing and the paid user acquisition. No upfront cost to your studio.</p>
+        </div>
+        <div>
+          <h3>Creative studio</h3>
+          <p>Video ads, playables and store art made in-house and tested every week.</p>
+        </div>
+        <div>
+          <h3>Data and analytics</h3>
+          <p>A shared dashboard with cohorts, funnels and ad performance for your game.</p>
+        </div>
+        <div>
+          <h3>Game design feedback</h3>
+          <p>Producers who have shipped casual and hybrid-casual hits review every build.</p>
+        </div>
+        <div>
+          <h3>Monetization setup</h3>
+          <p>Ad mediation, IAP catalog and pricing tuned to your game's audience.</p>
+        </div>
+        <div>
+          <h3>Clear terms</h3>
+          <p>A simple revenue share, an agreed test plan and no surprises in the contract.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pitch" id="pitch">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">Pitch a game</p>
+        <h2>Got a game that could climb?</h2>
+        <p>Send us a build, a prototype or even a gameplay video. We reply to every studio.</p>
+        <ul class="checklist">
+          <li><b>01</b>You send the game and a few details.</li>
+          <li><b>02</b>We play it and reply with feedback.</li>
+          <li><b>03</b>If it fits, we plan a Pump test together.</li>
+        </ul>
+      </div>
+
+      <form id="pitch-form" novalidate>
+        <div class="field">
+          <label for="studio">Studio name</label>
+          <input id="studio" name="studio" type="text" autocomplete="organization" required>
+        </div>
+        <div class="field">
+          <label for="email">Work email</label>
+          <input id="email" name="email" type="email" autocomplete="email" required>
+        </div>
+        <div class="field">
+          <label for="game">Game title</label>
+          <input id="game" name="game" type="text" required>
+        </div>
+        <div class="field">
+          <label for="stage">Stage</label>
+          <select id="stage" name="stage">
+            <option>Concept or video only</option>
+            <option>Playable prototype</option>
+            <option>Vertical slice</option>
+            <option>In soft launch</option>
+            <option>Live, looking to scale</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="genre">Genre</label>
+          <select id="genre" name="genre">
+            <option>Hyper-casual</option>
+            <option>Hybrid-casual</option>
+            <option>Puzzle</option>
+            <option>Arcade / idle</option>
+            <option>Simulation</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="platform">Platform</label>
+          <select id="platform" name="platform">
+            <option>iOS and Android</option>
+            <option>iOS</option>
+            <option>Android</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label for="link">Build or video link</label>
+          <input id="link" name="link" type="url" placeholder="TestFlight, Google Play, YouTube or Drive link">
+        </div>
+        <div class="field full">
+          <label for="notes">Tell us about the game</label>
+          <textarea id="notes" name="notes" placeholder="Core loop, any test results so far, team size"></textarea>
+        </div>
+        <div class="form-foot">
+          <button class="btn" type="submit">Send pitch</button>
+          <small>Preview form: submissions are not connected to an inbox yet.</small>
+        </div>
+        <p class="sent" id="sent" role="status" hidden></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span class="tagline">Pump it – Boost it – Hype it</span>
+    <span>© 2026 Pumbuhype. Mobile game publishing.</span>
+  </div>
+</footer>
+
+<script>
+  // Rocket rides the launch curve while the three phases are on screen.
+  // Wide, tall screens pin the scene and scroll drives the flight; elsewhere the curve sticks under the nav.
+  (() => {
+    const scene = document.getElementById('scene');
+    const curve = document.getElementById('curve');
+    const svg = curve.querySelector('svg');
+    const track = document.getElementById('track');
+    const trail = document.getElementById('trail');
+    const rocket = document.getElementById('rocket');
+    const body = document.getElementById('rocket-body');
+    const flame = document.getElementById('flame');
+    const hint = document.getElementById('hint');
+    const canvas = document.getElementById('fx');
+    const ctx = canvas.getContext('2d');
+    const dots = [...curve.querySelectorAll('.dot')];
+    const labels = [...curve.querySelectorAll('.stages li')];
+    const phases = [...document.querySelectorAll('.phase')];
+    const meters = phases.map((p) => p.querySelector('.meter i'));
+    const lines = phases.map((p) => [...p.querySelectorAll('p, li, .gate')]);
+    lines.flat().forEach((el) => el.classList.add('line'));
+    document.getElementById('model').classList.add('reveal');
+    const head = document.querySelector('#model .head');
+    const pinned = matchMedia('(min-width: 901px) and (min-height: 720px)');
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+    const len = track.getTotalLength();
+    const START = 40;   // end of the flat runway
+    const LAUNCH = 360; // distance flown past the end of the line
+    const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+    const rand = (a, b) => a + Math.random() * (b - a);
+
+    // Path length at each stage dot, found by sampling for the nearest x.
+    const stops = dots.map((d) => {
+      const x = +d.getAttribute('cx');
+      let best = 0, gap = Infinity;
+      for (let l = 0; l <= len; l += 2) {
+        const g = Math.abs(track.getPointAtLength(l).x - x);
+        if (g < gap) { gap = g; best = l; }
+      }
+      return best;
+    });
+    const ends = [stops[1], stops[2], len];
+    const tip = track.getPointAtLength(len);
+    const pre = track.getPointAtLength(len - 10);
+    const exitDir = { x: (tip.x - pre.x) / 10, y: (tip.y - pre.y) / 10 };
+    trail.style.strokeDasharray = len;
+
+    function pointAt(d) {
+      if (d <= len) return track.getPointAtLength(Math.max(0, d));
+      return { x: tip.x + exitDir.x * (d - len), y: tip.y + exitDir.y * (d - len) };
+    }
+
+    function target() {
+      if (pinned.matches) {
+        const r = scene.getBoundingClientRect();
+        const travel = r.height - scene.firstElementChild.offsetHeight;
+        return clamp(-r.top / travel);
+      }
+      const r = document.querySelector('.phases').getBoundingClientRect();
+      return clamp((innerHeight * 0.75 - r.top) / r.height);
+    }
+
+    // Scroll progress to distance on the line. Each phase gets an equal share of the scroll,
+    // then the rocket accelerates off the end and the last bit of scroll lets the scene settle.
+    const knots = [0, 0.3, 0.6, 0.9, 1];
+    const marks = [START, ...stops, len];
+    function distance(p) {
+      const climb = clamp((p - 0.02) / 0.8);
+      const fly = clamp((p - 0.82) / 0.12);
+      let i = 0;
+      while (i < knots.length - 2 && climb > knots[i + 1]) i++;
+      const t = (climb - knots[i]) / (knots[i + 1] - knots[i]);
+      return marks[i] + (marks[i + 1] - marks[i]) * t + LAUNCH * fly * fly;
+    }
+
+    let colors = {};
+    function readColors() {
+      const cs = getComputedStyle(document.documentElement);
+      for (const k of ['lime', 'green', 'deep', 'muted', 'flame-core']) colors[k] = cs.getPropertyValue('--' + k).trim();
+    }
+
+    let k = 1;
+    function resize() {
+      const r = canvas.getBoundingClientRect();
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      canvas.width = Math.round(r.width * dpr);
+      canvas.height = Math.round(r.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      k = svg.getBoundingClientRect().width / 1200;
+    }
+    // The canvas sits 40px left of and 140px above the SVG.
+    const px = (pt) => ({ x: 40 + pt.x * k, y: 140 + pt.y * k });
+
+    const parts = [];
+    function puff(at, dir, speed) {
+      const n = Math.min(7, 0.4 + speed * 0.35);
+      for (let i = 0; i < n; i++) {
+        const spread = rand(-0.5, 0.5);
+        const v = rand(0.4, 1.4) + speed * 0.08;
+        parts.push({ kind: 'smoke', x: at.x, y: at.y, vx: -Math.cos(dir + spread) * v, vy: -Math.sin(dir + spread) * v - 0.15,
+          r: rand(2, 4), grow: rand(0.15, 0.35), life: 0, max: rand(40, 75), color: colors.muted });
+        if (speed > 0.8 || Math.random() < 0.25) {
+          const sv = rand(1.5, 3.5) + speed * 0.15;
+          parts.push({ kind: 'spark', x: at.x, y: at.y, vx: -Math.cos(dir + spread * 1.6) * sv, vy: -Math.sin(dir + spread * 1.6) * sv,
+            r: rand(1, 2.2), life: 0, max: rand(14, 26), color: Math.random() < 0.5 ? colors.lime : colors['flame-core'] });
+        }
+      }
+    }
+    function burst(at, big) {
+      parts.push({ kind: 'ring', x: at.x, y: at.y, r: 6, grow: big ? 4.5 : 2.6, life: 0, max: big ? 44 : 34, color: colors.green });
+      if (big) parts.push({ kind: 'ring', x: at.x, y: at.y, r: 2, grow: 3, life: -8, max: 40, color: colors.lime });
+      const n = big ? 70 : 26;
+      const palette = [colors.lime, colors.green, colors.deep, colors['flame-core']];
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2;
+        const v = rand(1.5, big ? 7 : 4);
+        parts.push({ kind: big && i % 2 ? 'confetti' : 'spark', x: at.x, y: at.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - (big ? 1.5 : 0),
+          r: rand(1.5, big ? 4 : 2.6), spin: rand(-0.3, 0.3), rot: a, life: 0, max: rand(30, big ? 80 : 45), color: palette[i % palette.length] });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
+        p.life++;
+        if (p.life > p.max) { parts.splice(i, 1); continue; }
+        if (p.life < 0) continue;
+        const t = p.life / p.max;
+        ctx.globalAlpha = 1 - t;
+        ctx.fillStyle = ctx.strokeStyle = p.color;
+        if (p.kind === 'ring') {
+          p.r += p.grow * (1 - t);
+          ctx.lineWidth = 3 * (1 - t) + 0.5;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
+          continue;
+        }
+        p.x += p.vx; p.y += p.vy;
+        if (p.kind === 'smoke') {
+          p.vx *= 0.94; p.vy *= 0.94; p.r += p.grow;
+          ctx.globalAlpha = (1 - t) * 0.22;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        } else if (p.kind === 'confetti') {
+          p.vx *= 0.97; p.vy = p.vy * 0.97 + 0.12; p.rot += p.spin;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillRect(-p.r, -p.r * 0.45, p.r * 2, p.r * 0.9); ctx.restore();
+        } else {
+          p.vx *= 0.92; p.vy = p.vy * 0.92 + 0.05;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (1 - t * 0.6), 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    let shown = target(), lastD = distance(shown), frame = 0, launched = false, visible = false, running = false;
+    let stage = stops.reduce((s, st, i) => (lastD >= st - 1 ? i : s), -1);
+
+    function setStage(next, celebrate) {
+      if (celebrate && next > stage && next >= 0) {
+        const d = dots[next];
+        burst(px({ x: +d.getAttribute('cx'), y: +d.getAttribute('cy') }), false);
+        d.classList.remove('pop'); void d.getBBox(); d.classList.add('pop');
+        phases[next].classList.remove('flash'); void phases[next].offsetWidth; phases[next].classList.add('flash');
+      }
+      stage = next;
+      dots.forEach((d, i) => d.classList.toggle('on', i <= stage));
+      labels.forEach((l, i) => { l.classList.toggle('on', i <= stage); l.classList.toggle('now', i === stage); });
+      phases.forEach((p, i) => { p.classList.toggle('now', i === stage); p.classList.toggle('done', i < stage); });
+    }
+
+    function tick() {
+      frame++;
+      if (frame % 30 === 1) readColors();
+      const calm = still.matches;
+      const goal = target();
+      shown += (goal - shown) * (calm ? 1 : 0.2);
+      if (Math.abs(goal - shown) < 0.0003) shown = goal;
+      const d = distance(shown);
+      const speed = Math.abs(d - lastD);
+      lastD = d;
+
+      const pt = pointAt(d);
+      const a = pointAt(d + 4), b = pointAt(d - 4);
+      const dir = Math.atan2(a.y - b.y, a.x - b.x);
+      const scale = Math.min(2.6, Math.max(1, 520 / (k * 1200)));
+      const bob = calm || d > len ? 0 : Math.sin(frame / 8) * 1.4;
+      const gone = d > len + LAUNCH * 0.55;
+      rocket.style.opacity = gone ? 0 : 1;
+      rocket.setAttribute('transform', `translate(${pt.x} ${pt.y + bob})`);
+      body.setAttribute('transform', `rotate(${dir * 180 / Math.PI}) scale(${scale})`);
+      const thrust = 0.8 + Math.min(2.4, speed * 0.16) + (d > len ? 1.2 : 0);
+      flame.setAttribute('transform', `scale(${thrust * (calm ? 1 : rand(0.85, 1.15))} ${calm ? 1 : rand(0.85, 1.15)})`);
+      trail.style.strokeDashoffset = len - Math.min(d, len);
+      hint.style.opacity = shown < 0.02 ? 1 : 0;
+
+      const next = stops.reduce((s, st, i) => (d >= st - 1 ? i : s), -1);
+      if (next !== stage) setStage(next, !calm);
+      meters.forEach((m, i) => {
+        const fill = i < stage ? 1 : i === stage ? clamp((Math.min(d, ends[i]) - stops[i]) / (ends[i] - stops[i])) : 0;
+        m.style.setProperty('--fill', fill.toFixed(3));
+      });
+      // Write each card line by line as the rocket approaches its point.
+      lines.forEach((items, i) => {
+        const from = i === 0 ? START : stops[i - 1];
+        const local = clamp((d - from) / (stops[i] - from));
+        items.forEach((el, j) => el.classList.toggle('in', local >= (j + 0.6) / items.length));
+      });
+      if (pinned.matches && !calm) head.style.transform = `translateY(${(-shown * 18).toFixed(1)}px)`;
+      else head.style.transform = '';
+
+      if (!calm) {
+        const back = { x: pt.x - Math.cos(dir) * 17 * scale, y: pt.y + bob - Math.sin(dir) * 17 * scale };
+        if (visible && !gone) puff(px(back), dir, speed + (d > len ? 3 : 0));
+        if (!launched && d > len + LAUNCH * 0.45) { launched = true; burst(px(tip), true); }
+        if (launched && d < len - 20) launched = false;
+      }
+      draw();
+
+      if (visible || parts.length) requestAnimationFrame(tick);
+      else running = false;
+    }
+
+    function wake() { if (!running) { running = true; requestAnimationFrame(tick); } }
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) wake(); }).observe(document.getElementById('model'));
+    addEventListener('resize', () => { resize(); wake(); });
+    readColors();
+    resize();
+    setStage(stage, false);
+    wake();
+  })();
+
+  const form = document.getElementById('pitch-form');
+  const sent = document.getElementById('sent');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const missing = [...form.querySelectorAll('[required]')].find((el) => !el.value.trim() || !el.checkValidity());
+    if (missing) {
+      sent.textContent = 'Add your ' + form.querySelector('label[for="' + missing.id + '"]').textContent.toLowerCase() + ' so we can reply.';
+      sent.hidden = false;
+      missing.focus();
+      return;
+    }
+    sent.textContent = 'Thanks, ' + form.studio.value.trim() + '. Your pitch for ' + form.game.value.trim() + ' is ready to send once this form is connected.';
+    sent.hidden = false;
+  });
+</script>
+</body>
+</html>
