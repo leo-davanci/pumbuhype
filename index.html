@@ -15,6 +15,7 @@ body { margin: 0; -webkit-font-smoothing: antialiased; }
 img { max-width: 100%; }
 [hidden] { display: none !important; }
 </style>
+<script>document.documentElement.classList.add('js');</script>
 <title>Pumbuhype</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="description" content="Pumbuhype is a mobile game publisher. We test, soft launch and scale games with independent studios.">
@@ -73,7 +74,13 @@ p { margin: 0; }
 
 /* Nav */
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg); }
-.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); transition: box-shadow .3s ease; }
+.nav.scrolled { box-shadow: 0 8px 24px -18px rgba(0, 0, 0, .35); }
+.brand img { transition: transform .5s cubic-bezier(.3, 1.6, .5, 1); }
+.brand:hover img { transform: translate(3px, -3px) rotate(-6deg); }
+.nav ul a { position: relative; transition: color .2s ease; }
+.nav ul a::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 2px; border-radius: 2px; background: var(--lime); transform: scaleX(0); transform-origin: left; transition: transform .3s ease; }
+.nav ul a:hover::after { transform: scaleX(1); }
 .nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
 .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; font: 800 21px/1 var(--display); }
 .brand img { height: 34px; width: auto; }
@@ -81,8 +88,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; font-weight: 500; font-size: 15px; }
 .nav ul a { text-decoration: none; color: var(--muted); }
 .nav ul a:hover { color: var(--ink); }
-.btn { display: inline-flex; align-items: center; gap: 8px; font: 700 16px/1 var(--display); letter-spacing: 0.02em; text-decoration: none; padding: 13px 20px; border-radius: 999px; border: 0; cursor: pointer; background: var(--green); color: var(--accent-ink); transition: transform .15s ease, background .15s ease; }
-.btn:hover { background: var(--deep); transform: translateY(-1px); }
+.btn { position: relative; overflow: hidden; isolation: isolate; display: inline-flex; align-items: center; gap: 8px; font: 700 16px/1 var(--display); letter-spacing: 0.02em; text-decoration: none; padding: 13px 20px; border-radius: 999px; border: 0; cursor: pointer; background: var(--green); color: var(--accent-ink); transition: transform .25s cubic-bezier(.3, 1.6, .5, 1), background .2s ease, box-shadow .25s ease; }
+.btn::after { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, .35) 50%, transparent 65%); transform: translateX(-120%); transition: transform .6s ease; }
+.btn:hover { background: var(--deep); transform: translateY(-2px); box-shadow: 0 10px 24px -12px var(--glow); }
+.btn:hover::after { transform: translateX(120%); }
+.btn:active { transform: translateY(0) scale(.97); transition-duration: .08s; }
 .btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px var(--line); }
 .btn.ghost:hover { box-shadow: inset 0 0 0 1.5px var(--green); background: transparent; }
 .nav .btn { padding: 10px 16px; font-size: 15px; }
@@ -94,12 +104,60 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .hero .lede { margin-top: 22px; max-width: 54ch; font-size: 19px; color: var(--muted); }
 .hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 .hero .logo { justify-self: center; width: 100%; max-width: 460px; }
-.hero .logo img { width: 100%; height: auto; }
+/* Logo, cut into layers from the one image so the rocket can perform it. Insets are in % of the 612×522 artwork. */
+:root { --logo: url(logo-light.png); --rocket-body: url(rocket-body-light.png); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --logo: url(logo-dark.png); --rocket-body: url(rocket-body-dark.png); } }
+:root[data-theme="dark"] { --logo: url(logo-dark.png); --rocket-body: url(rocket-body-dark.png); }
+.mark { position: relative; aspect-ratio: 612 / 522; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.mark > i, .mark b { position: absolute; inset: 0; }
+.mark > i:not(.rocket-l):not(.body-s), .mark b { background: var(--logo) 0 0 / 100% 100% no-repeat; }
+.mark .curve-l { clip-path: inset(0 37.4% 30% 0); }
+.mark .rocket-l { clip-path: inset(0 0 30% 62.6%); }
+.mark .trail-l { clip-path: polygon(203.4% 112.5%, -51.1% -60.3%, -124.8% 88.9%, 129.8% 261.7%); }
+.mark .body-s { inset: auto; left: 71.08%; top: 0; width: 19.61%; height: 30.27%; background: var(--rocket-body) 0 0 / 100% 100% no-repeat; transform-origin: 52.7% 51.3%; will-change: transform; }
+.mark .body-s.idle { animation: hover 3.2s ease-in-out infinite; }
+.mark .w1 { clip-path: inset(70.3% 68% 8.4% 0); transform-origin: 16% 91%; }
+.mark .w2 { clip-path: inset(70.3% 32.4% 8.4% 34.8%); transform-origin: 51% 91%; }
+.mark .w3 { clip-path: inset(70.3% 0 8.4% 69.3%); transform-origin: 84% 91%; }
+.mark .t1 { clip-path: inset(93.4% 62.6% 0 19.6%); transform-origin: 28% 100%; }
+.mark .t2 { clip-path: inset(93.4% 40.5% 0 37.7%); transform-origin: 49% 100%; }
+.mark .t3 { clip-path: inset(93.4% 19.9% 0 59.6%); transform-origin: 70% 100%; }
+.mark canvas { position: absolute; left: -15%; top: -15%; width: 130%; height: 130%; pointer-events: none; }
+.mark::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, .75) 50%, transparent 60%) 0 0 / 300% 100% no-repeat; background-position: 150% 0; -webkit-mask: var(--logo) 0 0 / 100% 100% no-repeat; mask: var(--logo) 0 0 / 100% 100% no-repeat; }
+.mark.live::after { animation: shine 7s ease-in-out 1.5s infinite; }
+@keyframes hover { 50% { transform: translate(2.5px, -4.3px); } }
+@keyframes shine { 0%, 70% { background-position: 150% 0; } 100% { background-position: -50% 0; } }
+/* Hidden until the script stages the intro; shown anyway after 4s in case the script never runs. */
+@keyframes unhide { to { visibility: visible; } }
+@media (prefers-reduced-motion: no-preference) {
+  .js .mark.intro > * { visibility: hidden; animation: unhide 0s 4s forwards; }
+}
+.hero .up { background: linear-gradient(var(--lime), var(--lime)) no-repeat 0 92% / 0 .09em; }
+
+/* Hero entrance: words rise in, the underline draws, the logo lands and then floats. */
+@keyframes rise { from { opacity: 0; transform: translateY(.5em); filter: blur(6px); } }
+@keyframes draw { to { background-size: 100% .09em; } }
+.js .hero .eyebrow, .js .hero .lede, .js .hero .ctas { animation: rise .8s cubic-bezier(.2, .8, .2, 1) both; }
+.js .hero .eyebrow { animation-delay: .05s; }
+.js .hero .w { display: inline-block; animation: rise .7s cubic-bezier(.2, .8, .2, 1) both; animation-delay: calc(.15s + var(--i) * 55ms); }
+.js .hero .lede { animation-delay: .65s; }
+.js .hero .ctas { animation-delay: .8s; }
+.js .hero .up { animation: draw .7s cubic-bezier(.6, 0, .2, 1) 1.1s forwards; }
+.js .hero .logo { translate: 0 var(--py, 0px); }
 
 /* Ticker of what we watch */
-.metrics { border-block: 1px solid var(--line); background: var(--surface); }
-.metrics .wrap { display: flex; flex-wrap: wrap; gap: 10px 28px; padding-block: 16px; font: 500 13px/1.4 var(--mono); color: var(--muted); }
+.metrics { border-block: 1px solid var(--line); background: var(--surface); overflow: hidden; font: 500 13px/1.4 var(--mono); color: var(--muted); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
 .metrics b { color: var(--ink); font-weight: 500; }
+.ticker { display: flex; width: max-content; animation: slide 36s linear infinite; }
+.ticker .set { display: flex; }
+.ticker span { padding: 16px 0 16px 28px; white-space: nowrap; }
+.ticker span::after { content: "◆"; margin-left: 28px; font-size: 8px; vertical-align: 2px; color: var(--lime); }
+.metrics:hover .ticker { animation-play-state: paused; }
+@keyframes slide { to { transform: translateX(-50%); } }
+
+/* Content slides up as it scrolls into view. */
+.js [data-reveal] { opacity: 0; transform: translateY(26px); transition: opacity .7s ease, transform .8s cubic-bezier(.2, .8, .2, 1); transition-delay: calc(var(--i, 0) * 90ms); }
+.js [data-reveal].seen { opacity: 1; transform: none; }
 
 /* Phases */
 section { padding-block: 88px; }
@@ -130,7 +188,8 @@ section { padding-block: 88px; }
 .stages li.on { color: var(--green); }
 .stages li.now { color: var(--ink); transform: scale(1.15); }
 .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 8px; align-items: start; }
-.phase { position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: grid; gap: 14px; min-width: 0; transition: border-color .4s ease, transform .4s ease, box-shadow .4s ease; }
+.phase { position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: grid; gap: 14px; min-width: 0; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px)); transition: border-color .4s ease, transform .6s cubic-bezier(.3, 1.5, .5, 1), box-shadow .4s ease; }
+.phase.tilt { transition: border-color .4s ease, transform .12s linear, box-shadow .4s ease; }
 .phase::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, var(--glow) 50%, transparent 70%); opacity: .5; transform: translateX(-110%); pointer-events: none; }
 .phase.flash::after { animation: sweep .9s ease-out; }
 @keyframes sweep { to { transform: translateX(110%); } }
@@ -139,7 +198,7 @@ section { padding-block: 88px; }
 .phase li.line.in::before { animation: blip .6s ease-out; }
 @keyframes blip { 40% { transform: rotate(45deg) scale(2.2); box-shadow: 0 0 10px var(--glow); } }
 .phase.done { border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
-.phase.now { border-color: var(--green); transform: translateY(-8px); box-shadow: 0 20px 44px -22px var(--glow), 0 0 0 1px var(--green); }
+.phase.now { border-color: var(--green); --lift: -8px; box-shadow: 0 20px 44px -22px var(--glow), 0 0 0 1px var(--green); }
 .phase .tag { display: flex; justify-content: space-between; align-items: baseline; font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
 .phase h3 { font-size: 40px; font-weight: 800; }
 .phase:nth-child(1) h3 { color: var(--lime); }
@@ -151,14 +210,22 @@ section { padding-block: 88px; }
 .phase li::before { content: ""; flex: none; width: 7px; height: 7px; margin-top: 9px; border-radius: 2px; background: var(--lime); transform: rotate(45deg); }
 .gate { margin-top: 4px; padding: 12px 14px; border-radius: 10px; background: var(--chip); font: 400 13px/1.5 var(--mono); }
 .meter { display: block; height: 4px; margin-top: 10px; border-radius: 4px; background: var(--line); overflow: hidden; }
-.meter i { display: block; height: 100%; width: calc(var(--fill, 0) * 100%); border-radius: inherit; background: linear-gradient(90deg, var(--lime), var(--green)); }
+.meter i { display: block; height: 100%; width: calc(var(--fill, 0) * 100%); border-radius: inherit; background: linear-gradient(90deg, var(--lime), var(--green), var(--lime)) 0 0 / 200% 100%; animation: flow 1.6s linear infinite; }
+@keyframes flow { to { background-position: -200% 0; } }
+.curve .glow { fill: url(#hg); pointer-events: none; transition: opacity .3s ease; }
+.curve-art.shake { animation: shake .45s cubic-bezier(.36, .07, .19, .97); }
+@keyframes shake { 20% { transform: translate(-3px, 2px); } 40% { transform: translate(3px, -2px); } 60% { transform: translate(-2px, 1px); } 80% { transform: translate(1px, -1px); } }
 .gate span { display: block; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--green); margin-bottom: 4px; }
 
 /* Offer */
 .offer { background: var(--surface); border-block: 1px solid var(--line); }
 .offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; margin-top: 48px; background: var(--line); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
-.offer-grid > div { background: var(--surface); padding: 28px; display: grid; gap: 10px; align-content: start; min-width: 0; }
-.offer-grid h3 { font-size: 24px; font-weight: 700; }
+.offer-grid > div { position: relative; background: var(--surface); padding: 28px; display: grid; gap: 10px; align-content: start; min-width: 0; transition: background .3s ease; }
+.offer-grid > div::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: linear-gradient(90deg, var(--lime), var(--green)); transform: scaleX(0); transform-origin: left; transition: transform .45s cubic-bezier(.2, .8, .2, 1); }
+.offer-grid > div:hover { background: color-mix(in srgb, var(--chip) 45%, var(--surface)); }
+.offer-grid > div:hover::before { transform: scaleX(1); }
+.offer-grid h3 { font-size: 24px; font-weight: 700; transition: color .3s ease, transform .3s ease; }
+.offer-grid > div:hover h3 { color: var(--green); transform: translateX(4px); }
 .offer-grid p { color: var(--muted); font-size: 16px; }
 
 /* Pitch */
@@ -172,7 +239,9 @@ form { background: var(--surface); border: 1px solid var(--line); border-radius:
 .field.full { grid-column: 1 / -1; }
 label { font-weight: 600; font-size: 14px; }
 input, select, textarea { font: 400 16px/1.4 var(--body); color: var(--ink); background: var(--bg); border: 1.5px solid var(--line); border-radius: 10px; padding: 12px 14px; width: 100%; }
-input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green); }
+input, select, textarea { transition: border-color .2s ease, box-shadow .25s ease; }
+input:focus, select:focus, textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 4px color-mix(in srgb, var(--lime) 22%, transparent); }
+.sent:not([hidden]) { animation: rise .45s cubic-bezier(.2, .8, .2, 1); }
 textarea { min-height: 110px; resize: vertical; }
 .form-foot { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 20px; }
 .form-foot small { color: var(--muted); font-size: 13px; }
@@ -218,10 +287,17 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
   .brand span.word { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hint, .curve .dot.pop, .phase.flash::after, .phase li.line.in::before { animation: none; }
+  .hint, .curve .dot.pop, .phase.flash::after, .phase li.line.in::before, .meter i, .curve-art.shake, .sent:not([hidden]) { animation: none; }
   .reveal .phase .line { transform: none; }
   .phase { transition: none; }
-  .btn { transition: none; }
+  .btn, .btn::after, .brand img, .offer-grid > div::before, .offer-grid h3 { transition: none; }
+  .js .hero *, .js .hero .logo, .js .hero .up, .js .mark::after { animation: none !important; }
+  .hero .up { background-size: 100% .09em; }
+  .js [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .ticker { animation: none; flex-wrap: wrap; width: auto; }
+  .ticker .set { flex-wrap: wrap; }
+  .ticker .set + .set { display: none; }
+  .metrics { mask-image: none; }
 }
 </style>
 </head>
@@ -256,21 +332,33 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
           <a class="btn ghost" href="#model">See how it works</a>
         </div>
       </div>
-      <div class="logo">
-        <img class="on-light" src="logo-light.png" alt="Pumbuhype logo: a line climbing over two hills and launching a rocket">
-        <img class="on-dark" src="logo-dark.png" alt="Pumbuhype logo: a line climbing over two hills and launching a rocket">
+      <div class="logo" role="img" aria-label="Pumbuhype logo: a line climbing over two hills and launching a rocket">
+        <div class="mark intro" id="mark" title="Launch again">
+          <i class="curve-l"></i>
+          <i class="rocket-l"><b class="trail-l"></b></i>
+          <i class="w1"></i>
+          <i class="w2"></i>
+          <i class="w3"></i>
+          <i class="t1"></i>
+          <i class="t2"></i>
+          <i class="t3"></i>
+          <canvas></canvas>
+          <i class="body-s"></i>
+        </div>
       </div>
     </div>
   </div>
 
   <div class="metrics" aria-label="What we track on every game">
-    <div class="wrap">
-      <span>We watch <b>CPI</b></span>
-      <span><b>D1 / D7 / D30</b> retention</span>
-      <span><b>Playtime</b> per session</span>
-      <span><b>ARPDAU</b></span>
-      <span><b>ROAS</b> by cohort</span>
-      <span><b>LTV</b> vs. cost to acquire</span>
+    <div class="ticker">
+      <div class="set">
+        <span>We watch <b>CPI</b></span>
+        <span><b>D1 / D7 / D30</b> retention</span>
+        <span><b>Playtime</b> per session</span>
+        <span><b>ARPDAU</b></span>
+        <span><b>ROAS</b> by cohort</span>
+        <span><b>LTV</b> vs. cost to acquire</span>
+      </div>
     </div>
   </div>
 
@@ -294,12 +382,17 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
                 <stop class="stop1" offset="0"></stop>
                 <stop class="stop2" offset="1"></stop>
               </linearGradient>
+              <radialGradient id="hg">
+                <stop class="stop1" offset="0" stop-opacity=".9"></stop>
+                <stop class="stop1" offset="1" stop-opacity="0"></stop>
+              </radialGradient>
             </defs>
             <path class="track" id="track" d="M0,128 H40 C110,128 140,84 200,84 C270,84 340,108 400,108 C460,108 530,50 600,50 C670,50 740,78 800,78 L1170,10"></path>
             <path class="trail" id="trail" d="M0,128 H40 C110,128 140,84 200,84 C270,84 340,108 400,108 C460,108 530,50 600,50 C670,50 740,78 800,78 L1170,10"></path>
             <circle class="dot" cx="200" cy="84" r="9"></circle>
             <circle class="dot" cx="600" cy="50" r="9"></circle>
             <circle class="dot" cx="1000" cy="41.2" r="9"></circle>
+            <circle class="glow" id="glow" cx="40" cy="128" r="22"></circle>
             <g class="rocket" id="rocket" transform="translate(40 128)">
               <g id="rocket-body">
                 <g transform="translate(-15 0)"><g id="flame">
@@ -478,6 +571,341 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
 </footer>
 
 <script>
+  // Page motion outside the rocket scene: hero words, ticker loop, scroll reveals, nav shadow, logo parallax, card tilt.
+  (() => {
+    const still = matchMedia('(prefers-reduced-motion: reduce)');
+
+    let n = 0;
+    const split = (node) => [...node.childNodes].forEach((c) => {
+      if (c.nodeType === 1) return split(c);
+      const frag = document.createDocumentFragment();
+      c.textContent.split(/(\s+)/).forEach((part) => {
+        if (!part) return;
+        if (/^\s+$/.test(part)) return frag.append(part);
+        const w = document.createElement('span');
+        w.className = 'w'; w.style.setProperty('--i', n++); w.textContent = part;
+        frag.append(w);
+      });
+      c.replaceWith(frag);
+    });
+    split(document.querySelector('.hero h1'));
+
+    const ticker = document.querySelector('.ticker');
+    const copy = ticker.firstElementChild.cloneNode(true);
+    copy.setAttribute('aria-hidden', 'true');
+    ticker.append(copy);
+
+    const groups = ['.offer .head', '.offer-grid > div > *', '.pitch .head > *', '.checklist li', '#pitch-form', 'footer .wrap > *'];
+    const seen = new IntersectionObserver((entries) => entries.forEach((e) => {
+      if (e.isIntersecting) { e.target.classList.add('seen'); seen.unobserve(e.target); }
+    }), { rootMargin: '0px 0px -8% 0px' });
+    groups.forEach((sel) => document.querySelectorAll(sel).forEach((el, i) => {
+      el.dataset.reveal = '';
+      el.style.setProperty('--i', sel === '.offer-grid > div > *' ? Math.floor(i / 2) : i % 6);
+      seen.observe(el);
+    }));
+
+    const nav = document.querySelector('.nav');
+    const logo = document.querySelector('.hero .logo');
+    let queued = false;
+    const onScroll = () => {
+      queued = false;
+      nav.classList.toggle('scrolled', scrollY > 8);
+      if (!still.matches && scrollY < innerHeight) logo.style.setProperty('--py', (scrollY * 0.18).toFixed(1) + 'px');
+    };
+    addEventListener('scroll', () => { if (!queued) { queued = true; requestAnimationFrame(onScroll); } }, { passive: true });
+    onScroll();
+
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      document.querySelectorAll('.phase').forEach((card) => {
+        card.addEventListener('pointermove', (e) => {
+          if (still.matches) return;
+          const r = card.getBoundingClientRect();
+          const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+          card.classList.add('tilt');
+          card.style.setProperty('--ry', (x * 7).toFixed(2) + 'deg');
+          card.style.setProperty('--rx', (-y * 7).toFixed(2) + 'deg');
+        });
+        card.addEventListener('pointerleave', () => {
+          card.classList.remove('tilt');
+          card.style.removeProperty('--rx'); card.style.removeProperty('--ry');
+        });
+      });
+    }
+  })();
+
+  // Logo intro: the rocket pops in, crouches, rides the line drawing it, stops at the last valley,
+  // charges up and launches up its trail, then springs into its place in the logo. Click the logo to replay.
+  (() => {
+    const mark = document.getElementById('mark');
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { mark.classList.remove('intro'); return; }
+    const $ = (s) => mark.querySelector(s);
+    const curveL = $('.curve-l'), trail = $('.trail-l'), body = $('.body-s');
+    const words = [$('.w1'), $('.w2'), $('.w3')], tags = [$('.t1'), $('.t2'), $('.t3')];
+    const canvas = mark.querySelector('canvas'), ctx = canvas.getContext('2d');
+    const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+    const rand = (a, b) => a + Math.random() * (b - a);
+    const mix = (a, b, t) => a + (b - a) * t;
+    const outCubic = (t) => 1 - Math.pow(1 - t, 3);
+    const outBack = (t, s = 2.2) => 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2);
+    function bezier(x1, y1, x2, y2) {
+      const f = (a, b, t) => 3 * a * t * (1 - t) * (1 - t) + 3 * b * t * t * (1 - t) + t * t * t;
+      return (x) => { let lo = 0, hi = 1; for (let i = 0; i < 18; i++) { const m = (lo + hi) / 2; if (f(x1, x2, m) < x) lo = m; else hi = m; } return f(y1, y2, (lo + hi) / 2); };
+    }
+    const rideEase = bezier(0.22, 0.5, 0.6, 1);
+
+    // Centre of the logo's line, sampled every 3px from x=2, in artwork pixels (612×522).
+    const YS = [349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349.5,349,345,340.5,335.5,329.5,324,319.5,315.5,311.5,308,305,302.5,299.5,297,295,293.5,291.5,290.5,289,288,288,287,287,286.5,286.5,286.5,287,287.5,288,289,290,291.5,293.5,295.5,297,300,302.5,306,310,315.5,320.5,323,320,314,307,300,294,288,282.5,277.5,272.5,268,264,259.5,255.5,252.5,249,246.5,243.5,241,239,237.5,235.5,234,233,232,231,230.5,230,230,230,230,230,231,232,233,234,235.5,238,240,243.5,246.5,250.5,255,261.5,269.5,273.5,277.5,279];
+    const pts = YS.map((y, i) => ({ x: 2 + i * 3, y }));
+    const acc = [0];
+    for (let i = 1; i < pts.length; i++) acc.push(acc[i - 1] + Math.hypot(pts[i].x - pts[i - 1].x, pts[i].y - pts[i - 1].y));
+    const LEN = acc[acc.length - 1];
+    function onLine(u) {
+      u = clamp(u, 0, LEN);
+      let i = 1;
+      while (i < acc.length - 1 && acc[i] < u) i++;
+      const a = pts[i - 1], b = pts[i], t = (u - acc[i - 1]) / (acc[i] - acc[i - 1] || 1);
+      return { x: mix(a.x, b.x, t), y: mix(a.y, b.y, t) };
+    }
+    const tangent = (u) => { const a = onLine(u - 9), b = onLine(u + 9); return Math.atan2(b.y - a.y, b.x - a.x); };
+
+    // The trail leaves the line at O and runs along D; the rocket sprite's pivot sits REST along it.
+    const O = { x: 383, y: 280 }, D = { x: 0.50104, y: -0.86543 }, N = { x: 0.86543, y: 0.50104 };
+    const AX = Math.atan2(D.y, D.x), REST = 230, TAIL = 82, TRAIL_END = 166;
+    const onTrail = (s) => ({ x: O.x + D.x * s, y: O.y + D.y * s });
+    const PIV = onTrail(REST);
+    const MID = 0.68;
+
+    let k = 1, W = 0, H = 0, colors = {};
+    function resize() {
+      W = mark.clientWidth; H = W * 522 / 612; k = W / 612;
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      canvas.width = Math.round(W * 1.3 * dpr); canvas.height = Math.round(H * 1.3 * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const cs = getComputedStyle(document.documentElement);
+      for (const c of ['lime', 'green', 'deep', 'muted', 'flame-core']) colors[c] = cs.getPropertyValue('--' + c).trim();
+    }
+    const px = (p) => ({ x: 0.15 * W + p.x * k, y: 0.15 * H + p.y * k });
+
+    function place(r) {
+      const A = AX * 180 / Math.PI;
+      body.style.opacity = r.alpha;
+      body.style.transform = `translate(${((r.x - PIV.x) * k).toFixed(2)}px, ${((r.y - PIV.y) * k).toFixed(2)}px) rotate(${(r.ang * 180 / Math.PI).toFixed(2)}deg) scale(${(r.scale * r.sx).toFixed(3)}, ${(r.scale * r.sy).toFixed(3)}) rotate(${-A}deg)`;
+    }
+    const drawLineTo = (x) => { curveL.style.clipPath = `inset(0 ${(100 - clamp(x, 0, 383) / 6.12).toFixed(2)}% 30% 0)`; };
+    function drawTrailTo(s) {
+      const c = onTrail(s), L = 900;
+      const q = [[c.x + N.x * L, c.y + N.y * L], [c.x - N.x * L, c.y - N.y * L], [c.x - N.x * L - D.x * L, c.y - N.y * L - D.y * L], [c.x + N.x * L - D.x * L, c.y + N.y * L - D.y * L]];
+      trail.style.clipPath = 'polygon(' + q.map(([x, y]) => `${(x / 6.12).toFixed(2)}% ${(y / 5.22).toFixed(2)}%`).join(', ') + ')';
+    }
+
+    function pop(el, size) {
+      const a = size * k;
+      el.style.opacity = 1;
+      el.animate([
+        { transform: `translateY(${28 * a}px) scale(1.35, .15)`, opacity: 0 },
+        { transform: `translateY(${-14 * a}px) scale(.8, 1.3)`, opacity: 1, offset: 0.32 },
+        { transform: `translateY(${4 * a}px) scale(1.14, .86)`, offset: 0.56 },
+        { transform: `translateY(${-2 * a}px) scale(.96, 1.05)`, offset: 0.78 },
+        { transform: 'none' }
+      ], { duration: 560 + size * 220, easing: 'ease-out' });
+    }
+
+    const parts = [];
+    function smoke(at, dir, n, power = 1) {
+      for (let i = 0; i < n; i++) {
+        const a = dir + Math.PI + rand(-0.6, 0.6), v = rand(0.5, 1.8) * power;
+        parts.push({ kind: 'smoke', x: at.x, y: at.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.2, r: rand(1.5, 3.5) * k * 1.4, grow: rand(0.12, 0.3) * k * 1.4, life: 0, max: rand(30, 55), color: colors.muted });
+      }
+    }
+    function sparks(at, dir, n, power = 1, spread = 0.5) {
+      for (let i = 0; i < n; i++) {
+        const a = dir + Math.PI + rand(-spread, spread), v = rand(2, 5) * power;
+        parts.push({ kind: 'spark', x: at.x, y: at.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, r: rand(1, 2.4), life: 0, max: rand(14, 30), color: Math.random() < 0.5 ? colors.lime : colors['flame-core'] });
+      }
+    }
+    function burst(at, n, big) {
+      parts.push({ kind: 'ring', x: at.x, y: at.y, r: 4, grow: big ? 5 : 3, life: 0, max: big ? 42 : 30, color: colors.green });
+      if (big) parts.push({ kind: 'ring', x: at.x, y: at.y, r: 2, grow: 3.4, life: -7, max: 38, color: colors.lime });
+      const pal = [colors.lime, colors.green, colors.deep, colors['flame-core']];
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2, v = rand(1.5, big ? 7.5 : 4);
+        parts.push({ kind: big && i % 2 ? 'confetti' : 'spark', x: at.x, y: at.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - (big ? 2 : 0.5), r: rand(1.5, big ? 4 : 2.6), spin: rand(-0.3, 0.3), rot: a, life: 0, max: rand(30, big ? 85 : 45), color: pal[i % pal.length] });
+      }
+    }
+    function drawParts() {
+      for (let i = parts.length - 1; i >= 0; i--) {
+        const p = parts[i];
+        if (++p.life > p.max) { parts.splice(i, 1); continue; }
+        if (p.life < 0) continue;
+        const t = p.life / p.max;
+        ctx.globalAlpha = 1 - t;
+        ctx.fillStyle = ctx.strokeStyle = p.color;
+        if (p.kind === 'ring') {
+          p.r += p.grow * (1 - t); ctx.lineWidth = 3 * (1 - t) + 0.5;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
+          continue;
+        }
+        p.x += p.vx; p.y += p.vy;
+        if (p.kind === 'smoke') {
+          p.vx *= 0.94; p.vy *= 0.94; p.r += p.grow; ctx.globalAlpha = (1 - t) * 0.14;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
+        } else if (p.kind === 'confetti') {
+          p.vx *= 0.97; p.vy = p.vy * 0.97 + 0.13; p.rot += p.spin;
+          ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.rot); ctx.fillRect(-p.r, -p.r * 0.45, p.r * 2, p.r * 0.9); ctx.restore();
+        } else {
+          p.vx *= 0.92; p.vy = p.vy * 0.92 + 0.06;
+          ctx.beginPath(); ctx.arc(p.x, p.y, p.r * (1 - t * 0.6), 0, Math.PI * 2); ctx.fill();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+    function drawSpark(at, t) {
+      const charging = t < T.ride, q = charging ? clamp((t - 120) / (T.ride - 120)) : 1;
+      const jit = charging ? q * 1.5 : 0;
+      const x = at.x + rand(-jit, jit), y = at.y + rand(-jit, jit);
+      const r = (6 + 7 * q + Math.sin(t / 40) * 1.5) * Math.max(0.6, k);
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r * 2.4);
+      g.addColorStop(0, colors['flame-core']); g.addColorStop(0.25, colors.lime); g.addColorStop(1, 'transparent');
+      ctx.fillStyle = g; ctx.globalAlpha = 0.85;
+      ctx.beginPath(); ctx.arc(x, y, r * 2.4, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1; ctx.fillStyle = colors['flame-core'];
+      ctx.beginPath(); ctx.arc(x, y, r * 0.45, 0, Math.PI * 2); ctx.fill();
+      // Embers shed from the spark: a few while it charges, a steady stream while it runs.
+      const n = charging ? (Math.random() < q ? 1 : 0) : 2;
+      for (let i = 0; i < n; i++) {
+        const a = Math.random() * Math.PI * 2, v = rand(0.4, charging ? 2.5 : 1.6);
+        parts.push({ kind: 'spark', x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 0.4, r: rand(0.8, 1.8), life: 0, max: rand(12, 26), color: Math.random() < 0.6 ? colors.lime : colors['flame-core'] });
+      }
+    }
+    function drawFlame(r, power) {
+      if (power <= 0.02) return;
+      const tail = px({ x: r.x - Math.cos(r.ang) * TAIL * 0.92 * r.scale * r.sx, y: r.y - Math.sin(r.ang) * TAIL * 0.92 * r.scale * r.sx });
+      const len = (10 + power * 46) * k * r.scale * rand(0.8, 1.2), wid = 9 * k * r.scale * (0.7 + power * 0.5);
+      ctx.save(); ctx.translate(tail.x, tail.y); ctx.rotate(r.ang + Math.PI);
+      ctx.fillStyle = colors.lime; ctx.globalAlpha = 0.9;
+      ctx.beginPath(); ctx.moveTo(0, -wid); ctx.quadraticCurveTo(len * 0.5, -wid * 0.8, len, 0); ctx.quadraticCurveTo(len * 0.5, wid * 0.8, 0, wid); ctx.fill();
+      ctx.fillStyle = colors['flame-core'];
+      ctx.beginPath(); ctx.moveTo(0, -wid * 0.5); ctx.quadraticCurveTo(len * 0.3, -wid * 0.4, len * 0.55, 0); ctx.quadraticCurveTo(len * 0.3, wid * 0.4, 0, wid * 0.5); ctx.fill();
+      ctx.restore(); ctx.globalAlpha = 1;
+      return tail;
+    }
+
+    // Timeline in ms.
+    // A spark runs the line like a fuse; where it ends, the rocket pops onto its pad, charges and launches.
+    const T = { ride: 700, arrive: 1850, charge: 2180, launch: 2850, settle: 3120, tags: 3270, done: 4150 };
+    const PAD_S = TAIL * MID, CROUCH_S = PAD_S - 16, PEAKS = [190, 328];
+
+    // Spark pacing with momentum: slower up the hills, faster down them. TIME[i] is the share of the ride spent reaching RIDE_U[i].
+    const RIDE_U = [], TIME = [0];
+    for (let i = 0; i <= 200; i++) RIDE_U.push(mix(0, LEN, i / 200));
+    for (let i = 1; i <= 200; i++) TIME.push(TIME[i - 1] + 1 / (1 + 0.6 * Math.sin(clamp(tangent(RIDE_U[i]), -1.2, 1.2))));
+    for (let i = 0; i <= 200; i++) TIME[i] /= TIME[200];
+    function rideU(q) {
+      const c = rideEase(clamp(q));
+      let i = 1;
+      while (i < 200 && TIME[i] < c) i++;
+      return mix(RIDE_U[i - 1], RIDE_U[i], (c - TIME[i - 1]) / (TIME[i] - TIME[i - 1] || 1));
+    }
+    let start = 0, running = false, fired = {}, shake = 0, trailS = -40;
+    const sparkU = (t) => (t < T.ride ? 0 : t < T.arrive ? rideU((t - T.ride) / (T.arrive - T.ride)) : LEN);
+
+
+    function rocketAt(t) {
+      // Hidden while the spark runs; it pops onto the pad as the spark arrives.
+      if (t < T.arrive) return { ...onTrail(PAD_S), ang: AX, scale: 0, sx: 1, sy: 1, alpha: 0, flame: 0 };
+      if (t < T.charge) {
+        const q = (t - T.arrive) / (T.charge - T.arrive), g = Math.sin(Math.PI * q);
+        return { ...onTrail(PAD_S), ang: AX, scale: MID * outBack(Math.min(1, q * 1.8), 3), sx: 1 - 0.12 * g, sy: 1 + 0.1 * g, alpha: clamp(q * 6), flame: 0.2 * q };
+      }
+      if (t < T.launch) {
+        const q = (t - T.charge) / (T.launch - T.charge), e = outCubic(q);
+        const p = onTrail(mix(TAIL * MID, CROUCH_S, e));
+        return { ...p, ang: AX, scale: MID, sx: 1 - 0.3 * e, sy: 1 + 0.26 * e, alpha: 1, flame: 0.15 + q * 0.35, tremble: 0.6 + q * q * 3, charge: q };
+      }
+      if (t < T.settle) {
+        const q = (t - T.launch) / (T.settle - T.launch), e = outCubic(q);
+        const s = mix(CROUCH_S, REST + 44, e);
+        return { ...onTrail(s), s, ang: AX, scale: mix(MID, 1, outCubic(Math.min(1, q * 1.6))), sx: 1.55 - 0.35 * q, sy: 0.74 + 0.12 * q, alpha: 1, flame: 1.4 - q * 0.6, speed: 8 * (1 - q) };
+      }
+      const tau = (t - T.settle) / 1000, damp = Math.exp(-5.5 * tau);
+      const s = REST + 44 * damp * Math.cos(13 * tau);
+      const sx = 1 + 0.2 * Math.exp(-6.5 * tau) * Math.cos(19 * tau);
+      return { ...onTrail(s), s, ang: AX + 0.07 * damp * Math.sin(15 * tau), scale: 1, sx, sy: 1 / Math.sqrt(sx), alpha: 1, flame: 0.8 * Math.exp(-7 * tau) };
+    }
+
+    function once(name, at, t, fn) { if (!fired[name] && t >= at) { fired[name] = true; fn(); } }
+
+    function frame(now) {
+      const t = now - start;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const r = rocketAt(Math.min(t, T.done));
+      if (r.tremble) { r.x += rand(-1, 1) * r.tremble; r.y += rand(-1, 1) * r.tremble; }
+      if (t < T.done) place(r);
+
+      // The line follows the spark; the trail follows the rocket once it lifts off.
+      const u = sparkU(t), spark = onLine(u);
+      drawLineTo(t < T.arrive ? spark.x : 383);
+      if (t > 120 && t < T.arrive + 60) drawSpark(px(spark), t);
+      if (r.s !== undefined) { trailS = Math.max(trailS, Math.min(TRAIL_END, r.s - TAIL * r.scale * 0.9)); drawTrailTo(trailS); }
+
+      once('go', T.ride, t, () => { const p = px(onLine(0)); burst(p, 14, false); sparks(p, Math.PI, 14, 1.3, 0.6); shake = 2; });
+      if (t > T.ride && t < T.arrive && spark.x > PEAKS[0]) once('pump', 0, 1, () => {
+        pop(words[0], 1); burst(px(spark), 12, false);
+      });
+      if (t > T.ride && t < T.arrive && spark.x > PEAKS[1]) once('boost', 0, 1, () => {
+        pop(words[1], 1); burst(px(spark), 16, false);
+      });
+      once('land', T.arrive, t, () => {
+        if (!fired.pump) { fired.pump = true; pop(words[0], 1); }
+        if (!fired.boost) { fired.boost = true; pop(words[1], 1); }
+        const p = px(O); burst(p, 18, false); sparks(p, AX, 16, 1.4, 1.2); shake = 3;
+      });
+      once('blast', T.launch, t, () => { const p = px(O); burst(p, 26, false); smoke(p, AX, 26, 2.4); shake = 9; });
+      once('hype', T.launch + 90, t, () => { pop(words[2], 1.6); burst(px({ x: 520, y: 420 }), 70, true); });
+      [0, 1, 2].forEach((i) => once('tag' + i, T.tags + i * 130, t, () => pop(tags[i], 0.45)));
+
+      if (t < T.done) {
+        const tail = drawFlame(r, r.flame);
+        if (tail) {
+          const c = r.charge || 0;
+          if (Math.random() < 0.25 + r.flame * 0.4 + c * 0.5) smoke(tail, r.ang, 1 + Math.round(c + (r.speed || 0) * 0.2), 1 + r.flame);
+          if (r.flame > 0.5 || c > 0.5) sparks(tail, r.ang, 1 + Math.round(r.flame * 2), 1 + r.flame, 0.35);
+        }
+      }
+      shake *= 0.86;
+      const sc = t > T.charge && t < T.launch ? 1 - 0.02 * ((t - T.charge) / (T.launch - T.charge)) : 1;
+      mark.style.transform = shake > 0.2 || sc < 1 ? `translate(${rand(-1, 1) * shake}px, ${rand(-1, 1) * shake}px) scale(${sc})` : '';
+      drawParts();
+
+      if (t >= T.done && !fired.done) {
+        fired.done = true;
+        body.style.transform = ''; body.style.opacity = '';
+        curveL.style.clipPath = trail.style.clipPath = '';
+        [...words, ...tags].forEach((el) => { el.style.opacity = ''; });
+        body.classList.add('idle'); mark.classList.add('live');
+      }
+      if (t < T.done || parts.length || shake > 0.2) requestAnimationFrame(frame);
+      else { running = false; mark.style.transform = ''; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+    }
+
+    function play() {
+      if (running) return;
+      running = true; fired = {}; trailS = -40; shake = 0; parts.length = 0;
+      resize();
+      body.classList.remove('idle'); mark.classList.remove('live');
+      drawLineTo(0); drawTrailTo(trailS);
+      [...words, ...tags].forEach((el) => { el.style.opacity = 0; });
+      place({ ...onTrail(PAD_S), ang: AX, scale: 0, sx: 1, sy: 1, alpha: 0 });
+      mark.classList.remove('intro');
+      requestAnimationFrame((now) => { start = now; requestAnimationFrame(frame); });
+    }
+
+    addEventListener('resize', resize);
+    mark.addEventListener('click', play);
+    setTimeout(play, 250);
+  })();
+
   // Rocket rides the launch curve while the three phases are on screen.
   // Wide, tall screens pin the scene and scroll drives the flight; elsewhere the curve sticks under the nav.
   (() => {
@@ -490,6 +918,8 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
     const body = document.getElementById('rocket-body');
     const flame = document.getElementById('flame');
     const hint = document.getElementById('hint');
+    const glow = document.getElementById('glow');
+    const art = curve.querySelector('.curve-art');
     const canvas = document.getElementById('fx');
     const ctx = canvas.getContext('2d');
     const dots = [...curve.querySelectorAll('.dot')];
@@ -499,7 +929,7 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
     const lines = phases.map((p) => [...p.querySelectorAll('p, li, .gate')]);
     lines.flat().forEach((el) => el.classList.add('line'));
     document.getElementById('model').classList.add('reveal');
-    const head = document.querySelector('#model .head');
+    const heading = document.querySelector('#model .head');
     const pinned = matchMedia('(min-width: 901px) and (min-height: 720px)');
     const still = matchMedia('(prefers-reduced-motion: reduce)');
     const len = track.getTotalLength();
@@ -584,6 +1014,13 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
             r: rand(1, 2.2), life: 0, max: rand(14, 26), color: Math.random() < 0.5 ? colors.lime : colors['flame-core'] });
         }
       }
+      // Speed streaks once the rocket is really moving.
+      if (speed > 4 && Math.random() < 0.6) {
+        const off = rand(-14, 14);
+        const v = rand(4, 7) + speed * 0.2;
+        parts.push({ kind: 'streak', x: at.x - Math.sin(dir) * off, y: at.y + Math.cos(dir) * off, vx: -Math.cos(dir) * v, vy: -Math.sin(dir) * v,
+          r: rand(1, 1.8), life: 0, max: rand(10, 18), color: Math.random() < 0.5 ? colors.lime : colors.green });
+      }
     }
     function burst(at, big) {
       parts.push({ kind: 'ring', x: at.x, y: at.y, r: 6, grow: big ? 4.5 : 2.6, life: 0, max: big ? 44 : 34, color: colors.green });
@@ -615,7 +1052,11 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
           continue;
         }
         p.x += p.vx; p.y += p.vy;
-        if (p.kind === 'smoke') {
+        if (p.kind === 'streak') {
+          p.vx *= 0.9; p.vy *= 0.9;
+          ctx.lineWidth = p.r; ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x + p.vx * 5, p.y + p.vy * 5); ctx.stroke();
+        } else if (p.kind === 'smoke') {
           p.vx *= 0.94; p.vy *= 0.94; p.r += p.grow;
           ctx.globalAlpha = (1 - t) * 0.22;
           ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
@@ -631,6 +1072,7 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
     }
 
     let shown = target(), lastD = distance(shown), frame = 0, launched = false, visible = false, running = false;
+    let angle = null, stretch = 1, lastT = 0;
     let stage = stops.reduce((s, st, i) => (lastD >= st - 1 ? i : s), -1);
 
     function setStage(next, celebrate) {
@@ -646,26 +1088,38 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
       phases.forEach((p, i) => { p.classList.toggle('now', i === stage); p.classList.toggle('done', i < stage); });
     }
 
-    function tick() {
+    function tick(now) {
       frame++;
       if (frame % 30 === 1) readColors();
+      // Scale per-frame easing by elapsed time so 60Hz and 120Hz screens feel the same.
+      const step = clamp((now - (lastT || now - 16.7)) / 16.7, 0.25, 3);
+      lastT = now;
+      const ease = (f) => 1 - Math.pow(1 - f, step);
       const calm = still.matches;
       const goal = target();
-      shown += (goal - shown) * (calm ? 1 : 0.2);
+      shown += (goal - shown) * (calm ? 1 : ease(0.16));
       if (Math.abs(goal - shown) < 0.0003) shown = goal;
       const d = distance(shown);
-      const speed = Math.abs(d - lastD);
+      const speed = Math.abs(d - lastD) / step;
       lastD = d;
 
       const pt = pointAt(d);
       const a = pointAt(d + 4), b = pointAt(d - 4);
       const dir = Math.atan2(a.y - b.y, a.x - b.x);
+      // The nose turns a beat behind the curve, and the hull stretches with speed.
+      if (angle === null || calm) angle = dir;
+      else angle += Math.atan2(Math.sin(dir - angle), Math.cos(dir - angle)) * ease(0.18);
+      stretch += ((calm ? 1 : 1 + Math.min(0.28, speed * 0.022)) - stretch) * ease(0.2);
       const scale = Math.min(2.6, Math.max(1, 520 / (k * 1200)));
-      const bob = calm || d > len ? 0 : Math.sin(frame / 8) * 1.4;
+      const bob = calm || d > len ? 0 : Math.sin(now / 140) * 1.4;
       const gone = d > len + LAUNCH * 0.55;
       rocket.style.opacity = gone ? 0 : 1;
       rocket.setAttribute('transform', `translate(${pt.x} ${pt.y + bob})`);
-      body.setAttribute('transform', `rotate(${dir * 180 / Math.PI}) scale(${scale})`);
+      body.setAttribute('transform', `rotate(${angle * 180 / Math.PI}) scale(${scale * stretch} ${scale / Math.sqrt(stretch)})`);
+      const head = pointAt(Math.min(d, len));
+      glow.setAttribute('cx', head.x); glow.setAttribute('cy', head.y);
+      glow.setAttribute('r', (20 + (calm ? 0 : Math.sin(now / 180) * 4) + Math.min(14, speed)).toFixed(1));
+      glow.style.opacity = shown > 0.01 && d < len + 40 ? 1 : 0;
       const thrust = 0.8 + Math.min(2.4, speed * 0.16) + (d > len ? 1.2 : 0);
       flame.setAttribute('transform', `scale(${thrust * (calm ? 1 : rand(0.85, 1.15))} ${calm ? 1 : rand(0.85, 1.15)})`);
       trail.style.strokeDashoffset = len - Math.min(d, len);
@@ -683,13 +1137,16 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
         const local = clamp((d - from) / (stops[i] - from));
         items.forEach((el, j) => el.classList.toggle('in', local >= (j + 0.6) / items.length));
       });
-      if (pinned.matches && !calm) head.style.transform = `translateY(${(-shown * 18).toFixed(1)}px)`;
-      else head.style.transform = '';
+      if (pinned.matches && !calm) heading.style.transform = `translateY(${(-shown * 18).toFixed(1)}px)`;
+      else heading.style.transform = '';
 
       if (!calm) {
-        const back = { x: pt.x - Math.cos(dir) * 17 * scale, y: pt.y + bob - Math.sin(dir) * 17 * scale };
-        if (visible && !gone) puff(px(back), dir, speed + (d > len ? 3 : 0));
-        if (!launched && d > len + LAUNCH * 0.45) { launched = true; burst(px(tip), true); }
+        const back = { x: pt.x - Math.cos(angle) * 17 * scale, y: pt.y + bob - Math.sin(angle) * 17 * scale };
+        if (visible && !gone) puff(px(back), angle, speed + (d > len ? 3 : 0));
+        if (!launched && d > len + LAUNCH * 0.45) {
+          launched = true; burst(px(tip), true);
+          art.classList.remove('shake'); void art.offsetWidth; art.classList.add('shake');
+        }
         if (launched && d < len - 20) launched = false;
       }
       draw();
