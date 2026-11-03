@@ -187,7 +187,7 @@ section { padding-block: 88px; }
 .stages li { transition: color .3s ease, transform .3s ease; }
 .stages li.on { color: var(--green); }
 .stages li.now { color: var(--ink); transform: scale(1.15); }
-.phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 8px; align-items: start; }
+.phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 22px; align-items: start; }
 .phase { position: relative; overflow: hidden; background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 28px; display: grid; gap: 14px; min-width: 0; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--lift, 0px)); transition: border-color .4s ease, transform .6s cubic-bezier(.3, 1.5, .5, 1), box-shadow .4s ease; }
 .phase.tilt { transition: border-color .4s ease, transform .12s linear, box-shadow .4s ease; }
 .phase::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, var(--glow) 50%, transparent 70%); opacity: .5; transform: translateX(-110%); pointer-events: none; }
@@ -254,7 +254,7 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
 
 @media (min-width: 901px) and (min-height: 720px) {
   #model { padding-block: 0; }
-  .scene { height: 250vh; }
+  .scene { height: 180vh; }
   .stage { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 60px); height: calc(100vh - 60px - env(safe-area-inset-top, 0px)); display: flex; align-items: center; overflow: hidden; }
   .stage > .wrap { width: 100%; }
   #model .head { gap: 10px; }
@@ -949,6 +949,7 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
       return best;
     });
     const ends = [stops[1], stops[2], len];
+    const WRITE = 0.4; // share of each phase spent writing its card
     const tip = track.getPointAtLength(len);
     const pre = track.getPointAtLength(len - 10);
     const exitDir = { x: (tip.x - pre.x) / 10, y: (tip.y - pre.y) / 10 };
@@ -971,7 +972,7 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
 
     // Scroll progress to distance on the line. Each phase gets an equal share of the scroll,
     // then the rocket accelerates off the end and the last bit of scroll lets the scene settle.
-    const knots = [0, 0.3, 0.6, 0.9, 1];
+    const knots = [0, 0.1, 0.4, 0.7, 1];
     const marks = [START, ...stops, len];
     function distance(p) {
       const climb = clamp((p - 0.02) / 0.8);
@@ -1127,14 +1128,17 @@ footer .tagline { font: 700 18px/1 var(--display); color: var(--ink); letter-spa
 
       const next = stops.reduce((s, st, i) => (d >= st - 1 ? i : s), -1);
       if (next !== stage) setStage(next, !calm);
+      // A card only fills in while it is the current phase: its lines are written over the
+      // first part of the stretch, then its meter fills over the rest.
       meters.forEach((m, i) => {
-        const fill = i < stage ? 1 : i === stage ? clamp((Math.min(d, ends[i]) - stops[i]) / (ends[i] - stops[i])) : 0;
+        const span = ends[i] - stops[i], w = span * WRITE;
+        const fill = i < stage ? 1 : i === stage ? clamp((Math.min(d, ends[i]) - stops[i] - w) / (span - w)) : 0;
         m.style.setProperty('--fill', fill.toFixed(3));
       });
-      // Write each card line by line as the rocket approaches its point.
       lines.forEach((items, i) => {
-        const from = i === 0 ? START : stops[i - 1];
-        const local = clamp((d - from) / (stops[i] - from));
+        // The first card writes itself on the runway, before any phase is current.
+        const local = i < stage ? 1 : i === stage ? clamp((d - stops[i]) / ((ends[i] - stops[i]) * WRITE))
+          : i === 0 ? clamp((d - START) / (stops[0] - START)) : 0;
         items.forEach((el, j) => el.classList.toggle('in', local >= (j + 0.6) / items.length));
       });
       if (pinned.matches && !calm) heading.style.transform = `translateY(${(-shown * 18).toFixed(1)}px)`;
